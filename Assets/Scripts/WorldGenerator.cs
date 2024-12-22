@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static Unity.Collections.AllocatorManager;
 
 public class WorldGenerator : MonoBehaviour
 {
@@ -11,10 +10,10 @@ public class WorldGenerator : MonoBehaviour
     // Shared Variables
     public bool paintMode = false;
 
-    // Variáveis
+    // Variaveis
     public List<GameObject> tile;
 
-    // Número de tiles gerados
+    // Numero de tiles gerados
     public int[] seed;
     public int seedSize = 10;
 
@@ -28,23 +27,23 @@ public class WorldGenerator : MonoBehaviour
     {
         GenerateSeed();
         BuildMap();
-	}
+    }
 
     void GenerateSeed()
     {
         seed = new int[seedSize]; // Tamanho da Seed
 
-        for (int i = 0; i < seed.Length; i++) // Criação da Seed
+        for (int i = 0; i < seed.Length; i++) // Criacao da Seed
         {
-            seed[i] = UnityEngine.Random.Range(1, 5); // Gerar número aleatório para a seed
-            seedString += seed[i].ToString(); // Adicionar valor à seedString
+            seed[i] = UnityEngine.Random.Range(1, 5); // Gerar numero aleatorio para a seed
+            seedString += seed[i].ToString(); // Adicionar valor a seedString
         }
         Debug.Log(seedString); // Debug da seedString
     }
 
     void BuildMap()
     {
-        for (int i = 0; i < seed.Length; i++) // Construção do mapa
+        for (int i = 0; i < seed.Length; i++) // Construcao do mapa
         {
 
             switch (seed[i]) // 1 - UP | 2 - RIGHT | 3 - DOWN | 4 - LEFT
@@ -52,11 +51,7 @@ public class WorldGenerator : MonoBehaviour
                 case 1:
                     transform.position += new Vector3(0, 12, 0); // Movimento do WorldGenerator
 
-                    // Repetimos esta função várias vezes para não dar Memory Leak no Unity - função de detetar outros tiles já posicionados no jogo
-                    OverlapUP();
-                    OverlapUP();
-                    OverlapUP();
-                    OverlapUP();
+                    // Funcao para impedir overlaping
                     OverlapUP();
 
                     Instantiate(tile[0], new Vector3(transform.position.x, transform.position.y, transform.position.z), Quaternion.identity); // Pintar Tile no tile atual
@@ -64,11 +59,7 @@ public class WorldGenerator : MonoBehaviour
                 case 2:
                     transform.position += new Vector3(12, 0, 0); // Movimento do WorldGenerator
 
-                    // Repetimos esta função várias vezes para não dar Memory Leak no Unity - função de detetar outros tiles já posicionados no jogo
-                    OverlapRIGHT();
-                    OverlapRIGHT();
-                    OverlapRIGHT();
-                    OverlapRIGHT();
+                    // Funcao para impedir overlaping
                     OverlapRIGHT();
 
                     Instantiate(tile[1], new Vector3(transform.position.x, transform.position.y, transform.position.z), Quaternion.identity); // Pintar Tile no tile atual
@@ -76,11 +67,7 @@ public class WorldGenerator : MonoBehaviour
                 case 3:
                     transform.position += new Vector3(0, -12, 0); // Movimento do WorldGenerator
 
-                    // Repetimos esta função várias vezes para não dar Memory Leak no Unity - função de detetar outros tiles já posicionados no jogo
-                    OverlapDOWN();
-                    OverlapDOWN();
-                    OverlapDOWN();
-                    OverlapDOWN();
+                    // Funcao para impedir overlaping
                     OverlapDOWN();
 
                     Instantiate(tile[2], new Vector3(transform.position.x, transform.position.y, transform.position.z), Quaternion.identity); // Pintar Tile no tile atual
@@ -88,11 +75,7 @@ public class WorldGenerator : MonoBehaviour
                 case 4:
                     transform.position += new Vector3(-12, 0, 0); // Movimento do WorldGenerator
 
-                    // Repetimos esta função várias vezes para não dar Memory Leak no Unity - função de detetar outros tiles já posicionados no jogo
-                    OverlapLEFT();
-                    OverlapLEFT();
-                    OverlapLEFT();
-                    OverlapLEFT();
+                    // Funcao para impedir overlaping
                     OverlapLEFT();
 
                     Instantiate(tile[3], new Vector3(transform.position.x, transform.position.y, transform.position.z), Quaternion.identity); // Pintar Tile no tile atual
@@ -121,22 +104,38 @@ public class WorldGenerator : MonoBehaviour
 
     void OverlapUP()
     {
-        overlap = DetectObjects(); // Detetar outros objetos
-        if (overlap) transform.position += new Vector3(0, 12, 0); // Movimento do WorldGenerator
+        do
+        {
+            overlap = DetectObjects(); // Detetar outros objetos
+            if (overlap) transform.position += new Vector3(0, 12, 0); // Movimento do WorldGenerator
+        }
+        while (overlap == true);
     }
     void OverlapRIGHT()
     {
-        overlap = DetectObjects(); // Detetar outros objetos
-        if (overlap) transform.position += new Vector3(12, 0, 0); // Movimento do WorldGenerator
+        do
+        {
+            overlap = DetectObjects(); // Detetar outros objetos
+            if (overlap) transform.position += new Vector3(12, 0, 0); // Movimento do WorldGenerator
+        }
+        while (overlap == true);
     }
     void OverlapDOWN()
     {
-        overlap = DetectObjects(); // Detetar outros objetos
-        if (overlap) transform.position += new Vector3(0, -12, 0); // Movimento do WorldGenerator
+        do
+        {
+            overlap = DetectObjects(); // Detetar outros objetos
+            if (overlap) transform.position += new Vector3(0, -12, 0); // Movimento do WorldGenerator
+        }
+        while (overlap == true);
     }
     void OverlapLEFT()
     {
-        overlap = DetectObjects(); // Detetar outros objetos
-        if (overlap) transform.position += new Vector3(-12, 0, 0); // Movimento do WorldGenerator
+        do
+        {
+            overlap = DetectObjects(); // Detetar outros objetos
+            if (overlap) transform.position += new Vector3(-12, 0, 0); // Movimento do WorldGenerator
+        }
+        while (overlap == true);
     }
 }
